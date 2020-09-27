@@ -1,0 +1,12 @@
+#!/bin/bash
+
+pattern=$1
+
+if [[ -z $1 ]]; then
+    pattern='*_test.py'
+fi;
+
+echo $'\e'"[36mRunning tests under the pattern '"$pattern"'" $'\e[0m';
+
+coverage run  --source expression --omit *__init__.py -m unittest2 discover -p="$pattern"
+coverage html
