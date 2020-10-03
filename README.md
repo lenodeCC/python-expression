@@ -2,7 +2,13 @@
 
 ## About
 
-Serialize and deserialize nested compound expression strings such as (a = 1 or (b = 2 and c = 3)) into parsable expression trees such as [key:a operator:= value:1, conjunction:or, [key:b operator:= value:2, conjunction:and, key:c operator:= value:3]]..
+Serialize and deserialize nested compound expression strings such as `(a = 1 or (b = 2 and c = 3))` into parsable expression trees such as `[key:a operator:= value:1, conjunction:or, [key:b operator:= value:2, conjunction:and, key:c operator:= value:3]]`.
+
+You may want to provide an easy to configure filter on an endpoint such as `GET /services?filter=(price lt 200 and duration is 2hrs)`
+
+You may want to build an ORM filter.
+
+These sets of classes make few assumptions as to how conditions will be evaluated. It lets the author decide.
 
 ## Install
 
