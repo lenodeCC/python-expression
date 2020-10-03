@@ -1,5 +1,4 @@
 from expression.src.condition import Condition, ConditionSerializer
-from expression.src.operators import OperatorsBuilder
 from expression.tests.base_test_case import BaseTestCase
 
 
