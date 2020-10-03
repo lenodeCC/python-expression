@@ -1,6 +1,5 @@
 from expression.src.evaluate import Evaluate
 from expression.tests.base_test_case import BaseTestCase
-from expression.src.exceptions import ParameterNotFound
 from datetime import datetime
 
 
@@ -31,7 +30,6 @@ class DummyDateBetweenHandler():
 
         key = self._data.get(condition.key)
         values = condition.value.split(',')
-        operator = condition.operator
 
         if condition.operator == 'date_between':
             date1 = datetime.strptime(values[0], '%Y-%M-%d')
@@ -60,10 +58,9 @@ class EvaluateTest(BaseTestCase):
             "a": 1,
             "b": 2
         }))
-    
+
         result = evaluate.from_expression('(a == 1 and b == 2)')
         self.assertTrue(result)
-
 
     def test_can_evaluate_in(self):
 
@@ -71,6 +68,6 @@ class EvaluateTest(BaseTestCase):
             "a": 1,
             "b": 2
         }))
-    
+
         result = evaluate.from_expression('a in 1,8')
         self.assertTrue(result)

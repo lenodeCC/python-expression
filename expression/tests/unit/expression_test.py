@@ -24,7 +24,6 @@ class ExpressionTest(BaseTestCase):
         self.assertEqual('=', conditions.conditions[2].operator)
         self.assertEqual('2', conditions.conditions[2].value)
 
-    
     def test_expression_resolves_nested_compound_condition(self):
 
         expression = Expression('(a = 1 or (b = 2 and c = 3))')

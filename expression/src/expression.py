@@ -1,33 +1,33 @@
 import re
-from expression.src.condition import Condition, Conditions, ConditionSerializer, Conjuntion
+from expression.src.condition import Conditions, ConditionSerializer, Conjuntion
 from expression.src.exceptions import ExpressionTerminatedByOperator, BadlyFormattedExpression
-from expression.src.enclosure import Boundary, EnclosureGroups, ResolveEnclosureGroups
+from expression.src.enclosure import Boundary, ResolveEnclosureGroups
 
 
 class Expression():
 
     CONJUNCTIONS = [
-        'and', 
-        'or', 
-        'xor', 
-        'not', 
-        'nand', 
-        'nor', 
+        'and',
+        'or',
+        'xor',
+        'not',
+        'nand',
+        'nor',
         'xnor'
     ]
 
     REPLACEMENT_RULES = {
-        '\s+': ' ',
-        '[\s]+': ' ',
-        '\s?\(\s?': '(',
-        '\s?\)\s?': ')',
-        '\s?([\,\:])\s?': ','
+        r'\s+': ' ',
+        r'[\s]+': ' ',
+        r'\s?\(\s?': '(',
+        r'\s?\)\s?': ')',
+        r'\s?([\,\:])\s?': ','
     }
 
     condition_count = 0
     operator_count = 0
 
-    def __init__(self, expression): 
+    def __init__(self, expression):
         self.expression = expression
 
     def to_conditions(self):
@@ -76,7 +76,7 @@ class Expression():
         expression = self._normalise_expression(expression)
         expression = self._unwrap_expression(expression)
         groups = ResolveEnclosureGroups().from_expression(expression)
-        
+
         length = len(expression)
         store = []
         i = 0
@@ -131,7 +131,7 @@ class Expression():
     def _normalise_expression(self, expression):
         for regex, replace in self.REPLACEMENT_RULES.items():
             expression = re.sub(regex, replace, expression)
-    
+
         return expression.strip()
 
     def _unwrap_expression(self, expression):
@@ -148,5 +148,5 @@ class Expression():
                 un_wrap = True
             else:
                 un_wrap = False
-        
+
         return expression

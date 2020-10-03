@@ -3,7 +3,7 @@ class EmptyCondition(Exception):
 
 
 class Conjuntion():
-    
+
     def __init__(self, value):
         self.value = value
 
@@ -40,8 +40,8 @@ class ConditionSerializer():
             )
 
         return '{} {} {}'.format(
-            condition.key, 
-            condition.operator, 
+            condition.key,
+            condition.operator,
             condition.value
         )
 
@@ -52,8 +52,8 @@ class ConditionSerializer():
             raise EmptyCondition
 
         parts = condition.split(' ')
-            
-        if len(parts) < 3: 
+
+        if len(parts) < 3:
             return Condition(parts[0])
 
         return Condition(parts[0], parts[1], ' '.join(parts[2:]))

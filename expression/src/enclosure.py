@@ -1,7 +1,3 @@
-from expression.src.condition import Condition, Conditions, ConditionSerializer, Conjuntion
-from expression.src.exceptions import ExpressionTerminatedByOperator, BadlyFormattedExpression
-
-
 class Boundary():
     OPENING = '('
     CLOSING = ')'
@@ -16,7 +12,7 @@ class EnclosureGroups():
     def open_at(self, opening_index):
         self._opening_indexes.append(opening_index)
         self._groups[opening_index] = None
-    
+
     def close_at(self, closing_index):
         opening_index = self._opening_indexes.pop()
         self._groups[opening_index] = closing_index
@@ -28,9 +24,9 @@ class EnclosureGroups():
         return None
 
     def get_first_group_index(self):
-        if bool(self._groups) == True:
+        if bool(self._groups) is True:
             return next(iter(self._groups))
-        
+
         return None
 
     def _remove_group_by_opening_index(self, opening_index):
@@ -53,5 +49,5 @@ class ResolveEnclosureGroups():
                 groups.open_at(i)
             elif Boundary.CLOSING == expression[i]:
                 groups.close_at(i)
-        
+
         return groups

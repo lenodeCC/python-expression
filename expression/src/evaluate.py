@@ -1,13 +1,10 @@
-import re
-from expression.src.condition import Condition, Conditions, ConditionSerializer, Conjuntion
-from expression.src.exceptions import ExpressionTerminatedByOperator, BadlyFormattedExpression
-from expression.src.enclosure import Boundary, EnclosureGroups, ResolveEnclosureGroups
+from expression.src.condition import Condition, Conjuntion
 from expression.src.expression import Expression
 
 
 class Evaluate():
 
-    def __init__(self, condition_handler): 
+    def __init__(self, condition_handler):
         self._condition_handler = condition_handler
         self._conjuctions = {}
 
@@ -23,16 +20,16 @@ class Evaluate():
     def _resolve_conditions(self, conditions):
         store = ''
         for condition in conditions:
-           
+
             if isinstance(condition, list):
                 store + self._resolve_conditions(condition)
             elif isinstance(condition, Condition):
                 store += '({})'.format(self._resolve_condition(condition))
             elif isinstance(condition, Conjuntion):
                 store += ' {} '.format(condition.value)
-        
+
         return store
-                
+
     def _resolve_condition(self, condition):
 
         return self._condition_handler.handle(condition)
