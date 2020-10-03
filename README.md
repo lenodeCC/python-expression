@@ -2,8 +2,7 @@
 
 ## About
 
-- [ ] todo
-Todo expression parser.
+Serialize and deserialize nested compound expression strings such as (a = 1 or (b = 2 and c = 3)) into parsable expression graphs.
 
 ## Install
 
