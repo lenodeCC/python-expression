@@ -2,12 +2,33 @@ class EmptyCondition(Exception):
     pass
 
 
+class Conjuntion():
+    
+    def __init__(self, value):
+        self.value = value
+
+    def __repr__(self):
+        return "conjunction:{}".format(self.value)
+
+
 class Condition():
 
     def __init__(self, key, operator = None, value = None):
         self.key = key
         self.operator = operator
         self.value = value
+
+    def __repr__(self):
+        if self.operator is None or self.value is None:
+            return 'key:{}'.format(self.key)
+
+        return "key:{} operator:{} value:{}".format(self.key, self.operator, self.value)
+
+
+class Conditions():
+
+    def __init__(self, conditions):
+        self.conditions = conditions
 
 
 class ConditionSerializer():
