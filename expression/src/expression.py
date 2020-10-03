@@ -8,12 +8,7 @@ class Expression():
 
     CONJUNCTIONS = [
         'and',
-        'or',
-        'xor',
-        'not',
-        'nand',
-        'nor',
-        'xnor'
+        'or'
     ]
 
     REPLACEMENT_RULES = {
