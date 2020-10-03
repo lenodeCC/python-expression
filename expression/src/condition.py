@@ -2,7 +2,7 @@ class EmptyCondition(Exception):
     pass
 
 
-class Conjuntion():
+class Conjunction():
 
     def __init__(self, value):
         self.value = value

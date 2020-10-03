@@ -1,4 +1,4 @@
-from expression.src.condition import Condition, Conjuntion
+from expression.src.condition import Condition, Conjunction
 from expression.src.expression import Expression
 
 
@@ -25,7 +25,7 @@ class Evaluate():
                 store + self._resolve_conditions(condition)
             elif isinstance(condition, Condition):
                 store += '({})'.format(self._resolve_condition(condition))
-            elif isinstance(condition, Conjuntion):
+            elif isinstance(condition, Conjunction):
                 store += ' {} '.format(condition.value)
 
         return store

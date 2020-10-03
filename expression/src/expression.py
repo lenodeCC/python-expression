@@ -1,5 +1,5 @@
 import re
-from expression.src.condition import Conditions, ConditionSerializer, Conjuntion
+from expression.src.condition import Conditions, ConditionSerializer, Conjunction
 from expression.src.exceptions import ExpressionTerminatedByOperator, BadlyFormattedExpression
 from expression.src.enclosure import Boundary, ResolveEnclosureGroups
 
@@ -50,7 +50,7 @@ class Expression():
                 store.append(ConditionSerializer().deserialize(condition))
             else:
                 self.operator_count += 1
-                store.append(Conjuntion(condition))
+                store.append(Conjunction(condition))
 
         return store
 
@@ -67,7 +67,7 @@ class Expression():
                     self._resolve_statement_segments(fragment)
                 )
 
-        if len(store) > 0 and isinstance(store[-1], Conjuntion):
+        if len(store) > 0 and isinstance(store[-1], Conjunction):
             raise ExpressionTerminatedByOperator
 
         return store
