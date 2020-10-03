@@ -49,6 +49,38 @@ print(conditions.conditions[2].operator))   # =
 print(conditions.conditions[2].value))      # 2
 ```
 
+Evaluate an expression as a boolean.
+
+```python
+
+class DummyDateBetweenHandler():
+
+    def __init__(self, data):
+        self._data = data
+
+    def handle(self, condition):
+
+        key = self._data.get(condition.key)
+        values = condition.value.split(',')
+
+        if condition.operator == 'date_between':
+            date1 = datetime.strptime(values[0], '%Y-%M-%d')
+            date2 = datetime.strptime(values[1], '%Y-%M-%d')
+
+            if date1 <= key <= date2:
+                return True
+
+        return False
+
+evaluate = Evaluate(DummyDateBetweenHandler({
+    "date": datetime.strptime("2020-09-27", '%Y-%M-%d')
+}))
+
+result = evaluate.from_expression('date date_between 2020-09-26,2020-09-28')
+self.assertTrue(result)
+
+```
+
 ## Contribute
 
 ### Running tests
