@@ -4,11 +4,12 @@
 
 Serialize and deserialize nested compound expression strings such as `(a = 1 or (b = 2 and c = 3))` into parsable expression trees such as `[key:a operator:= value:1, conjunction:or, [key:b operator:= value:2, conjunction:and, key:c operator:= value:3]]`.
 
-You may want to provide an easy to configure filter on an endpoint such as `GET /services?filter=(price lt 200 and duration is 2hrs)`
+You may want to:-
+- provide an easy to configure filter on an endpoint such as `GET /services?filter=(price lt 200 and duration is 2hrs)`.
+- build an ORM filter based on the expression.
+- simply evaluate that an expression is `True` or `False`.
 
-You may want to build an ORM filter.
-
-These sets of classes make few assumptions as to how conditions will be evaluated. It lets the author decide.
+These sets of classes make few assumptions as to how conditions will be evaluated. It lets the author configure handlers that can be used to resolve conditions.
 
 ## Install
 
@@ -37,7 +38,7 @@ print(conditions.conditions[2].value))      # 2
 
 Evaluate an expression such `date date_between 2020-09-26,2020-09-28` as a boolean.
 
-Instantiate and Evaluate object passing through resolved expression arguments. In this case the `date` key will be resolved to a date object of `2020-09-27`.
+Instantiate the Evaluate object, passing through resolved expression arguments. In this case the `date` key will be resolved to a date object of `2020-09-27`.
 
 ```python
 evaluate = Evaluate({
@@ -45,7 +46,7 @@ evaluate = Evaluate({
 })
 ```
 
-Before evaluating ensure that the `date_between` expression can be handled by a designated Handler.
+Before evaluating ensure that the `date_between` expression can be handled by a designated Handler such as `DateBetweenHandler`.
 ```python
 evaluate.add_condition_handlers({
     'date_between': DateBetweenHandler
