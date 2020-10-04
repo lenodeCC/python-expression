@@ -1,12 +1,14 @@
+from expression.src.handler import Handler
 from expression.src.evaluate import Evaluate
 from expression.tests.base_test_case import BaseTestCase
 from datetime import datetime
 
 
-class DummyConditionHandler():
+class DummyNoopHandler(Handler):
+    pass
+        
 
-    def __init__(self, data):
-        self._data = data
+class DummyConditionHandler(Handler):
 
     def handle(self, condition):
 
@@ -21,10 +23,7 @@ class DummyConditionHandler():
         return '{} {} {}'.format(key, operator, values[0])
 
 
-class DummyDateBetweenHandler():
-
-    def __init__(self, data):
-        self._data = data
+class DummyDateBetweenHandler(Handler):
 
     def handle(self, condition):
 
@@ -45,29 +44,51 @@ class EvaluateTest(BaseTestCase):
 
     def test_can_evaluate_date_between_example(self):
 
-        evaluate = Evaluate(DummyDateBetweenHandler({
+        evaluate = Evaluate({
             "date": datetime.strptime("2020-09-27", '%Y-%M-%d')
-        }))
-
+        })
+        evaluate.add_condition_handler(DummyDateBetweenHandler)
         result = evaluate.from_expression('date date_between 2020-09-26,2020-09-28')
         self.assertTrue(result)
 
     def test_can_evaluate_compound_condition(self):
 
-        evaluate = Evaluate(DummyConditionHandler({
+        evaluate = Evaluate({
             "a": 1,
             "b": 2
-        }))
+        })
+        evaluate.add_condition_handler(DummyConditionHandler)
 
         result = evaluate.from_expression('(a == 1 and b == 2)')
         self.assertTrue(result)
 
+    def test_can_evaluate_nested_compound_condition(self):
+
+        evaluate = Evaluate({
+            "a": 1,
+            "b": 2,
+            "c": 3
+        })
+        evaluate.add_condition_handler(DummyConditionHandler)
+
+        result = evaluate.from_expression('(a == 1 and (b == 2 or c == 3))')
+        self.assertTrue(result)
+
     def test_can_evaluate_in(self):
 
-        evaluate = Evaluate(DummyConditionHandler({
+        evaluate = Evaluate({
             "a": 1,
             "b": 2
-        }))
+        })
+        evaluate.add_condition_handler(DummyConditionHandler)
 
         result = evaluate.from_expression('a in 1,8')
         self.assertTrue(result)
+
+    def test_can_cannot_evaluate_dummy_noop_handler(self):
+
+        evaluate = Evaluate()
+        evaluate.add_condition_handler(DummyNoopHandler)
+
+        result = evaluate.from_expression('1 == 1')
+        self.assertFalse(result)
