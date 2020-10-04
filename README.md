@@ -58,9 +58,10 @@ class DummyDateBetweenHandler():
 
         return False
 
-evaluate = Evaluate(DummyDateBetweenHandler({
+evaluate = Evaluate({
     "date": datetime.strptime("2020-09-27", '%Y-%M-%d')
-}))
+})
+evaluate.add_condition_handler(DummyDateBetweenHandler)
 
 result = evaluate.from_expression('date date_between 2020-09-26,2020-09-28')
 self.assertTrue(result)
