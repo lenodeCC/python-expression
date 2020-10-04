@@ -1,7 +1,14 @@
 import re
 from expression.src.condition import Conditions, ConditionSerializer, Conjunction
-from expression.src.exceptions import ExpressionTerminatedByOperator, BadlyFormattedExpression
 from expression.src.enclosure import Boundary, ResolveEnclosureGroups
+
+
+class ExpressionTerminatedByOperator(Exception):
+    pass
+
+
+class BadlyFormattedExpression(Exception):
+    pass
 
 
 class Expression():
