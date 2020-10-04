@@ -2,14 +2,19 @@ from expression.src.condition import Condition, Conjunction
 from expression.src.expression import Expression
 
 
+class NoHandlerFound(Exception):
+    pass
+
+
 class Evaluate():
 
     def __init__(self, data = {}):
         self._data = data
-        self._condition_handlers = []
+        self._condition_handlers = {}
 
-    def add_condition_handler(self, condition_handler):
-        self._condition_handlers.append(condition_handler)
+    def add_condition_handlers(self, condition_handlers):
+        for i in condition_handlers:
+            self._condition_handlers[i] = condition_handlers[i]
 
     def from_expression(self, expression):
         conditions = Expression(expression).to_conditions()
@@ -34,12 +39,8 @@ class Evaluate():
 
     def _resolve_condition(self, condition):
 
-        for handler in self._condition_handlers:
-            result = handler(self._data).handle(condition)
+        if condition.operator not in self._condition_handlers:
+            raise NoHandlerFound
 
-            if result is None:
-                continue
-            else:
-                return result
-
-        return False
+        handler = self._condition_handlers[condition.operator]
+        return handler(self._data).handle(condition)

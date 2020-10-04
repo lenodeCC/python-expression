@@ -3,11 +3,11 @@ from expression.src.condition import Conditions, ConditionSerializer, Conjunctio
 from expression.src.enclosure import Boundary, ResolveEnclosureGroups
 
 
-class ExpressionTerminatedByOperator(Exception):
+class ExpressionBadlyTerminated(Exception):
     pass
 
 
-class BadlyFormattedExpression(Exception):
+class ExpressionBadlyFormatted(Exception):
     pass
 
 
@@ -35,7 +35,7 @@ class Expression():
     def to_conditions(self):
         conditions = self._generate_conditions(self.expression)
         if self.condition_count and self.condition_count - 1 != self.operator_count:
-            raise BadlyFormattedExpression
+            raise ExpressionBadlyFormatted
 
         return Conditions(conditions)
 
@@ -70,11 +70,16 @@ class Expression():
                 )
 
         if len(store) > 0 and isinstance(store[-1], Conjunction):
-            raise ExpressionTerminatedByOperator
+            raise ExpressionBadlyTerminated
 
         return store
 
     def _split_compound_expression_into_root_fragments(self, expression):
+        """Split compound expressions into root fragments.
+
+        a = 1 and (b = 1 or c = 3) would be resolved to
+        ['a = 1 and', '(b = 1 or c = 3)']
+        """
         expression = self._normalise_expression(expression)
         expression = self._unwrap_expression(expression)
         groups = ResolveEnclosureGroups().from_expression(expression)
@@ -138,7 +143,8 @@ class Expression():
 
     def _unwrap_expression(self, expression):
         """Recursively un_wrap the expression.
-        Ensure that ((((a + b)))) resolves to a + b
+
+        Ensure that ((((a + b)))) resolves to a + b.
         """
         groups = ResolveEnclosureGroups().from_expression(expression)
         un_wrap = True

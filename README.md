@@ -35,37 +35,41 @@ print(conditions.conditions[2].operator))   # =
 print(conditions.conditions[2].value))      # 2
 ```
 
-Evaluate an expression as a boolean.
+Evaluate an expression such `date date_between 2020-09-26,2020-09-28` as a boolean.
+
+Instantiate and Evaluate object passing through resolved expression arguments. In this case the `date` key will be resolved to a date object of `2020-09-27`.
 
 ```python
-
-class DummyDateBetweenHandler():
-
-    def __init__(self, data):
-        self._data = data
-
-    def handle(self, condition):
-
-        key = self._data.get(condition.key)
-        values = condition.value.split(',')
-
-        if condition.operator == 'date_between':
-            date1 = datetime.strptime(values[0], '%Y-%M-%d')
-            date2 = datetime.strptime(values[1], '%Y-%M-%d')
-
-            if date1 <= key <= date2:
-                return True
-
-        return False
-
 evaluate = Evaluate({
     "date": datetime.strptime("2020-09-27", '%Y-%M-%d')
 })
-evaluate.add_condition_handler(DummyDateBetweenHandler)
+```
 
+Before evaluating ensure that the `date_between` expression can be handled by a designated Handler.
+```python
+evaluate.add_condition_handlers({
+    'date_between': DateBetweenHandler
+})
+```
+
+Now evaluate the expression from string.
+```python
 result = evaluate.from_expression('date date_between 2020-09-26,2020-09-28')
 self.assertTrue(result)
+```
 
+You can plug in any custom handler to suit the usecase.
+```python
+class DateBetweenHandler(Handler):
+
+    def handle(self, condition):
+        key = self._data.get(condition.key)
+
+        values = condition.value.split(',')
+        date1 = datetime.strptime(values[0], '%Y-%M-%d')
+        date2 = datetime.strptime(values[1], '%Y-%M-%d')
+
+        return date1 <= key <= date2
 ```
 
 ## Contribute

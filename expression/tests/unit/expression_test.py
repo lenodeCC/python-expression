@@ -1,4 +1,6 @@
-from expression.src.expression import Expression
+from expression.src.expression import Expression, \
+    ExpressionBadlyTerminated, \
+    ExpressionBadlyFormatted
 from expression.tests.base_test_case import BaseTestCase
 
 
@@ -34,3 +36,15 @@ class ExpressionTest(BaseTestCase):
         self.assertEqual('c', conditions.conditions[2][2].key)
         self.assertEqual('=', conditions.conditions[2][2].operator)
         self.assertEqual('3', conditions.conditions[2][2].value)
+
+    def test_expression_raises_badly_formatted_error(self):
+
+        expression = Expression('(a = 1 and or (b = 2 and c = 3))')
+        with self.assertRaises(ExpressionBadlyFormatted):
+            expression.to_conditions()
+
+    def test_expression_raises_badly_terminated_error(self):
+
+        expression = Expression('(a = 1 or (b = 2 and c = 3)) or')
+        with self.assertRaises(ExpressionBadlyTerminated):
+            expression.to_conditions()

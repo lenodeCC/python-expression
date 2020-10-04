@@ -1,43 +1,7 @@
-from expression.src.handler import Handler
-from expression.src.evaluate import Evaluate
+from expression.src.handler import EqualsHandler, InHandler, DateBetweenHandler
+from expression.src.evaluate import Evaluate, NoHandlerFound
 from expression.tests.base_test_case import BaseTestCase
 from datetime import datetime
-
-
-class DummyNoopHandler(Handler):
-    pass
-        
-
-class DummyConditionHandler(Handler):
-
-    def handle(self, condition):
-
-        key = self._data.get(condition.key)
-        values = condition.value.split(',')
-        operator = condition.operator
-
-        if condition.operator == 'in':
-            key = str(key)
-            return key in values
-
-        return '{} {} {}'.format(key, operator, values[0])
-
-
-class DummyDateBetweenHandler(Handler):
-
-    def handle(self, condition):
-
-        key = self._data.get(condition.key)
-        values = condition.value.split(',')
-
-        if condition.operator == 'date_between':
-            date1 = datetime.strptime(values[0], '%Y-%M-%d')
-            date2 = datetime.strptime(values[1], '%Y-%M-%d')
-
-            if date1 <= key <= date2:
-                return True
-
-        return False
 
 
 class EvaluateTest(BaseTestCase):
@@ -47,7 +11,9 @@ class EvaluateTest(BaseTestCase):
         evaluate = Evaluate({
             "date": datetime.strptime("2020-09-27", '%Y-%M-%d')
         })
-        evaluate.add_condition_handler(DummyDateBetweenHandler)
+        evaluate.add_condition_handlers({
+            'date_between': DateBetweenHandler
+        })
         result = evaluate.from_expression('date date_between 2020-09-26,2020-09-28')
         self.assertTrue(result)
 
@@ -57,7 +23,9 @@ class EvaluateTest(BaseTestCase):
             "a": 1,
             "b": 2
         })
-        evaluate.add_condition_handler(DummyConditionHandler)
+        evaluate.add_condition_handlers({
+            '==': EqualsHandler
+        })
 
         result = evaluate.from_expression('(a == 1 and b == 2)')
         self.assertTrue(result)
@@ -69,7 +37,9 @@ class EvaluateTest(BaseTestCase):
             "b": 2,
             "c": 3
         })
-        evaluate.add_condition_handler(DummyConditionHandler)
+        evaluate.add_condition_handlers({
+            '==': EqualsHandler
+        })
 
         result = evaluate.from_expression('(a == 1 and (b == 2 or c == 3))')
         self.assertTrue(result)
@@ -80,15 +50,15 @@ class EvaluateTest(BaseTestCase):
             "a": 1,
             "b": 2
         })
-        evaluate.add_condition_handler(DummyConditionHandler)
+        evaluate.add_condition_handlers({
+            'in': InHandler
+        })
 
         result = evaluate.from_expression('a in 1,8')
         self.assertTrue(result)
 
-    def test_can_cannot_evaluate_dummy_noop_handler(self):
+    def test_exception_thrown_when_there_is_no_handler(self):
 
         evaluate = Evaluate()
-        evaluate.add_condition_handler(DummyNoopHandler)
-
-        result = evaluate.from_expression('1 == 1')
-        self.assertFalse(result)
+        with self.assertRaises(NoHandlerFound):
+            evaluate.from_expression('a foo b')
