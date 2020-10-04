@@ -16,12 +16,13 @@ setup(
             key:b operator:= value:2,
             conjunction:and,
             key:c operator:= value:3
-            ]
+        ]
     ].
     """,
     packages = find_packages(
         include = ['expression.src']
     ),
     long_description = open('README.md').read(),
+    long_description_content_type = "text/markdown",
     zip_safe = False
 )
